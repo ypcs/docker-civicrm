@@ -43,4 +43,4 @@ COPY *.php /usr/local/share/civicrm/
 RUN \
     /usr/local/sbin/civicrm-download /opt/drupal
 
-RUN echo "Source: https://github.com/ypcs/docker-civicrm\nBuild date: $(date +%Y-%m-%d\ %H:%M:%S)" >/README
+RUN echo "Source: https://github.com/ypcs/docker-civicrm\nBuild date: $(date --iso-8601=ns)" >/README
