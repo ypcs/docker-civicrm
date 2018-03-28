@@ -1,7 +1,8 @@
 #!/bin/sh
 set -e
 
-TARGET="${1:-/var/www}"
+TARGET="${1}"
+[ -z "${TARGET}" ] && echo "missing target directory!" && exit 1
 
 [ -z "${CIVICRM_VERSION}" ] && echo "Missing CIVICRM_VERSION!" && exit 1 
 [ -z "${CIVICRM_SHA256}" ] && echo "Missing CIVICRM_SHA256!" && exit 1 
