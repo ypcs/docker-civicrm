@@ -21,4 +21,3 @@ tar xzf civicrm.tar.gz && \
 tar xzf civicrm-l10n.tar.gz && \
 
 rm -f civicrm.tar.gz civicrm-l10n.tar.gz
-
