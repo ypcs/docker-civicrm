@@ -38,7 +38,7 @@ RUN \
 COPY download.sh /usr/local/sbin/civicrm-download
 COPY setup.sh /usr/local/sbin/civicrm-setup
 
-COPY *.php /usr/local/share/civicrm/
+COPY config/*.php /usr/local/share/civicrm/
 
 RUN \
     /usr/local/sbin/civicrm-download /opt/drupal
