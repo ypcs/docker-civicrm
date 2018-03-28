@@ -1,46 +1,38 @@
-FROM ypcs/drupal:7
-
-ENV CIVICRM_ENVIRONMENT production
-
-ENV CIVICRM_DATABASE_USER civicrm
-ENV CIVICRM_DATABASE_PASSWORD civicrm
-ENV CIVICRM_DATABASE_HOST civicrm
-ENV CIVICRM_DATABASE_NAME civicrm
-
-ENV CIVICRM_VERSION 4.7.31
-ENV CIVICRM_SHA256 627748e20f44b8f755ce928434231617836d045fd9d9b73413827762e2755058
-ENV CIVICRM_L10N_SHA256 277d4f86573407f81976e4b39ece443fa447ca48606436852e6209e3793aa57b
-
-ENV CIVICRM_INSTALL_URL http://web/sites/all/modules/civicrm/install/index.php
-
-ENV CIVICRM_CV_SHA256 500bcc61900baf59a98eef5c1bdedc4c1559fbd9339413573213ca84a5a3fef5
-ENV CIVICRM_CV_URL https://download.civicrm.org/cv/cv.phar
-
-ENV DRUPAL_LOGIN_URL http://web/user/login
-
-ARG VCS_REF
-LABEL org.label-schema.vcs-ref=$VCS_REF
+FROM ypcs/civicrm:latest
+ENV DOCUMENT_ROOT /var/www
 
 RUN \
-    /usr/local/sbin/docker-upgrade &&\
-    apt-get update && \
-    apt-get --assume-yes upgrade && \
+    /usr/local/sbin/docker-upgrade && \
     apt-get --assume-yes install \
-        curl \
-        mariadb-client && \
+        git \
+        mkdocs \
+        mkdocs-bootstrap \
+        nodejs \
+        php${PHP_VERSION}-bcmath \
+        php${PHP_VERSION}-xdebug \
+        unzip \
+        zip && \
+    update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
     /usr/local/sbin/docker-cleanup
 
-RUN \
-    curl -fSL "${CIVICRM_CV_URL}" -o /usr/local/bin/cv && \
-    echo "${CIVICRM_CV_SHA256} /usr/local/bin/cv" |sha256sum -c - && \
-    chmod +x /usr/local/bin/cv
-
-COPY download.sh /usr/local/sbin/civicrm-download
-COPY setup.sh /usr/local/sbin/civicrm-setup
-
-COPY config/*.php /usr/local/share/civicrm/
+COPY php-xdebug.ini /etc/php/${PHP_VERSION}/fpm/conf.d/99-xdebug.ini
 
 RUN \
-    /usr/local/sbin/civicrm-download /opt/drupal
+    echo "TODO: install drupal"
 
-RUN echo "Source: https://github.com/ypcs/docker-civicrm\nBuild date: $(date --iso-8601=ns)" >/README
+RUN \
+    echo "TODO: clone civicrm repository?"
+
+RUN \
+    echo "TODO: clone other civicrm docs, w/o shallow?"
+
+RUN \
+    mkdir -p /usr/local/share/doc && \
+    git clone --depth=1 https://github.com/civicrm/civicrm-sysadmin-guide /usr/local/share/doc/civicrm-sysadmin-guide
+
+RUN \
+    mkdir -p /usr/local/share && \
+    git clone --depth=1 https://github.com/civicrm/civicrm-buildkit /usr/local/share/civicrm-buildkit
+
+RUN \
+    /usr/local/share/civicrm-buildkit/bin/civi-download-tools
