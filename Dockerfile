@@ -16,13 +16,12 @@ ARG VCS_REF
 LABEL org.label-schema.vcs-ref=$VCS_REF
 
 RUN \
-    /usr/local/sbin/docker-upgrade &&\
-    apt-get update && \
-    apt-get --assume-yes upgrade && \
+    /usr/lib/docker-helpers/apt-setup && \
+    /usr/lib/docker-helpers/apt-upgrade && \
     apt-get --assume-yes install \
         curl \
         mariadb-client && \
-    /usr/local/sbin/docker-cleanup
+    /usr/lib/docker-helpers/apt-cleanup
 
 RUN \
     curl -fSL "${CIVICRM_CV_URL}" -o /usr/local/bin/cv && \
